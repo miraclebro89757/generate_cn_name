@@ -1,0 +1,88 @@
+{
+  "常用字": {
+    "姓氏": {
+      "李": {
+        "meaning": "李子树",
+        "pinyin": "lǐ",
+        "frequency": "very high",
+        "cultural_significance": "中国最常见的姓氏之一，代表着智慧和力量"
+      },
+      "王": {
+        "meaning": "君主",
+        "pinyin": "wáng",
+        "frequency": "very high",
+        "cultural_significance": "象征着领导力和权威"
+      },
+      "张": {
+        "meaning": "弓弦",
+        "pinyin": "zhāng",
+        "frequency": "very high",
+        "cultural_significance": "代表着力量和准确性"
+      }
+    },
+    "名字": {
+      "男性常用": {
+        "伟": {
+          "meaning": "伟大",
+          "pinyin": "wěi",
+          "usage": "high",
+          "personality": "有领导力，追求卓越"
+        },
+        "强": {
+          "meaning": "强壮",
+          "pinyin": "qiáng",
+          "usage": "high",
+          "personality": "坚强，有毅力"
+        },
+        "文": {
+          "meaning": "文化，文雅",
+          "pinyin": "wén",
+          "usage": "high",
+          "personality": "文雅，有学识"
+        }
+      },
+      "女性常用": {
+        "婷": {
+          "meaning": "优雅",
+          "pinyin": "tíng",
+          "usage": "high",
+          "personality": "优雅，端庄"
+        },
+        "静": {
+          "meaning": "安静",
+          "pinyin": "jìng",
+          "usage": "high",
+          "personality": "沉稳，内敛"
+        },
+        "美": {
+          "meaning": "美丽",
+          "pinyin": "měi",
+          "usage": "high",
+          "personality": "美丽，善良"
+        }
+      }
+    }
+  },
+  "音译字": {
+    "米": {
+      "pinyin": "mǐ",
+      "common_translation": ["mi", "me"]
+    },
+    "克": {
+      "pinyin": "kè",
+      "common_translation": ["ke", "co", "ca"]
+    },
+    "尔": {
+      "pinyin": "ěr",
+      "common_translation": ["er", "el"]
+    },
+    "斯": {
+      "pinyin": "sī",
+      "common_translation": ["s", "se"]
+    },
+    "特": {
+      "pinyin": "tè",
+      "common_translation": ["te", "ta"]
+    }
+  }
+}
