@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chinese Name Generator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Chinese Name Generator</h1>
-            <p class="subtitle">Discover your meaningful Chinese name</p>
+            <p class="subtitle">Transform your English name into a meaningful Chinese name</p>
         </header>
 
         <main>
-            <!-- Name Input Section -->
+            <!-- Input Section -->
             <section class="input-section">
                 <div class="input-wrapper">
-                    <input type="text" id="englishName" placeholder="Enter your English name">
-                    <div class="style-selector">
-                        <label class="style-label">
-                            <input type="radio" name="nameStyle" value="modern" checked> 现代
-                        </label>
-                        <label class="style-label">
-                            <input type="radio" name="nameStyle" value="classical"> 古风
-                        </label>
+                    <div class="input-group">
+                        <input type="text" id="englishName" placeholder="Enter your English name">
+                        <div class="style-selector">
+                            <label class="style-label">
+                                <input type="radio" name="nameStyle" value="modern" checked> Modern
+                            </label>
+                            <label class="style-label">
+                                <input type="radio" name="nameStyle" value="classical"> Classical
+                            </label>
+                        </div>
+                        <button id="generateBtn">Generate Names</button>
                     </div>
-                    <button id="generateBtn">Generate Names</button>
                 </div>
             </section>
 
@@ -38,28 +41,35 @@
             <!-- Name Card Template -->
             <template id="nameCardTemplate">
                 <div class="name-card">
-                    <h2 class="chinese-name"></h2>
-                    <p class="pinyin"></p>
-                    <div class="meaning">
-                        <h3>Meaning</h3>
-                        <p class="characters-meaning"></p>
-                        <p class="overall-meaning"></p>
+                    <div class="name-header">
+                        <h2 class="chinese-name"></h2>
+                        <p class="pinyin"></p>
                     </div>
-                    <div class="cultural">
-                        <h3>Cultural Significance</h3>
-                        <p class="cultural-meaning"></p>
+                    <div class="name-details">
+                        <div class="detail-section">
+                            <h3>Characters Meaning</h3>
+                            <p class="characters-meaning"></p>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Overall Meaning</h3>
+                            <p class="overall-meaning"></p>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Cultural Significance</h3>
+                            <p class="cultural-meaning"></p>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Personality Traits</h3>
+                            <p class="personality-traits"></p>
+                        </div>
                     </div>
-                    <div class="personality">
-                        <h3>Personality Traits</h3>
-                        <p class="personality-traits"></p>
-                    </div>
-                    <button class="save-btn">Save This Name</button>
+                    <button class="save-btn">Save Name</button>
                 </div>
             </template>
         </main>
 
         <footer>
-            <p>Created with ❤️ to bridge cultural understanding</p>
+            <p>Created with ❤️ by Chinese Name Generator Team</p>
         </footer>
     </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

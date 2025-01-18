@@ -6,6 +6,11 @@ const nameCardTemplate = document.getElementById('nameCardTemplate');
 
 // 事件监听器
 document.addEventListener('DOMContentLoaded', function() {
+    const generateBtn = document.getElementById('generateBtn');
+    const englishNameInput = document.getElementById('englishName');
+    const resultsSection = document.getElementById('resultsSection');
+    const nameCardTemplate = document.getElementById('nameCardTemplate');
+
     generateBtn.addEventListener('click', async function() {
         const englishName = englishNameInput.value.trim();
         const selectedStyle = document.querySelector('input[name="nameStyle"]:checked').value;
@@ -50,8 +55,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     const saveBtn = nameCard.querySelector('.save-btn');
                     saveBtn.addEventListener('click', function() {
-                        // 保存功能待实现
-                        alert('Save feature coming soon!');
+                        // 创建要复制的文本
+                        const copyText = `Chinese Name: ${nameData.chinese}
+Pinyin: ${nameData.pinyin}
+Characters Meaning: ${nameData.characters_meaning}
+Overall Meaning: ${nameData.overall_meaning}
+Cultural Significance: ${nameData.cultural_significance}
+Personality Traits: ${nameData.personality_traits}`;
+
+                        // 复制到剪贴板
+                        copyToClipboard(copyText, saveBtn);
                     });
                     
                     resultsSection.appendChild(nameCard);
@@ -67,6 +80,27 @@ document.addEventListener('DOMContentLoaded', function() {
             generateBtn.textContent = 'Generate Names';
         }
     });
+
+    // 复制到剪贴板的函数
+    async function copyToClipboard(text, button) {
+        try {
+            await navigator.clipboard.writeText(text);
+            
+            // 更新按钮文本显示反馈
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.backgroundColor = '#27ae60';
+            
+            // 2秒后恢复按钮原始状态
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '#2ecc71';
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    }
 });
 
 // 添加页面加载动画
