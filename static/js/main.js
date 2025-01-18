@@ -5,90 +5,69 @@ const resultsSection = document.getElementById('resultsSection');
 const nameCardTemplate = document.getElementById('nameCardTemplate');
 
 // 事件监听器
-generateBtn.addEventListener('click', generateNames);
-englishNameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        generateNames();
-    }
-});
-
-// 生成名字的主函数
-async function generateNames() {
-    const englishName = englishNameInput.value.trim();
-    if (!englishName) {
-        alert('Please enter your English name');
-        return;
-    }
-
-    try {
-        // 显示加载状态
-        generateBtn.disabled = true;
-        generateBtn.textContent = 'Generating...';
-
-        // 发送请求到后端
-        const response = await fetch('/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ english_name: englishName })
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+document.addEventListener('DOMContentLoaded', function() {
+    generateBtn.addEventListener('click', async function() {
+        const englishName = englishNameInput.value.trim();
+        const selectedStyle = document.querySelector('input[name="nameStyle"]:checked').value;
+        
+        if (!englishName) {
+            alert('Please enter your English name');
+            return;
         }
 
-        const names = await response.json();
-        displayResults(names);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Sorry, something went wrong. Please try again.');
-    } finally {
-        // 恢复按钮状态
-        generateBtn.disabled = false;
-        generateBtn.textContent = 'Generate Names';
-    }
-}
+        generateBtn.disabled = true;
+        generateBtn.textContent = 'Generating...';
+        resultsSection.innerHTML = '';
 
-// 显示结果
-function displayResults(names) {
-    // 清空之前的结果
-    resultsSection.innerHTML = '';
+        try {
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    english_name: englishName,
+                    name_style: selectedStyle
+                })
+            });
 
-    // 为每个名字创建一个卡片
-    names.forEach(name => {
-        const card = nameCardTemplate.content.cloneNode(true);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-        // 填充卡片内容
-        card.querySelector('.chinese-name').textContent = name.chinese;
-        card.querySelector('.pinyin').textContent = name.pinyin;
-        card.querySelector('.characters-meaning').textContent = name.characters_meaning;
-        card.querySelector('.overall-meaning').textContent = name.overall_meaning;
-        card.querySelector('.cultural-meaning').textContent = name.cultural_significance;
-        card.querySelector('.personality-traits').textContent = name.personality_traits;
-
-        // 添加保存按钮功能
-        const saveBtn = card.querySelector('.save-btn');
-        saveBtn.addEventListener('click', () => saveName(name));
-
-        resultsSection.appendChild(card);
+            const names = await response.json();
+            
+            if (Array.isArray(names)) {
+                names.forEach(nameData => {
+                    const nameCard = nameCardTemplate.content.cloneNode(true);
+                    
+                    nameCard.querySelector('.chinese-name').textContent = nameData.chinese;
+                    nameCard.querySelector('.pinyin').textContent = nameData.pinyin;
+                    nameCard.querySelector('.characters-meaning').textContent = nameData.characters_meaning;
+                    nameCard.querySelector('.overall-meaning').textContent = nameData.overall_meaning;
+                    nameCard.querySelector('.cultural-meaning').textContent = nameData.cultural_significance;
+                    nameCard.querySelector('.personality-traits').textContent = nameData.personality_traits;
+                    
+                    const saveBtn = nameCard.querySelector('.save-btn');
+                    saveBtn.addEventListener('click', function() {
+                        // 保存功能待实现
+                        alert('Save feature coming soon!');
+                    });
+                    
+                    resultsSection.appendChild(nameCard);
+                });
+            } else {
+                throw new Error('Invalid response format');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to generate names. Please try again.');
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.textContent = 'Generate Names';
+        }
     });
-}
-
-// 保存名字
-function saveName(name) {
-    // 获取已保存的名字
-    let savedNames = JSON.parse(localStorage.getItem('savedNames') || '[]');
-    
-    // 检查是否已经保存
-    if (!savedNames.some(saved => saved.chinese === name.chinese)) {
-        savedNames.push(name);
-        localStorage.setItem('savedNames', JSON.stringify(savedNames));
-        alert('Name saved successfully!');
-    } else {
-        alert('This name is already saved!');
-    }
-}
+});
 
 // 添加页面加载动画
 document.addEventListener('DOMContentLoaded', () => {

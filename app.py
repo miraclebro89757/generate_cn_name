@@ -22,19 +22,30 @@ def get_zhipu_headers():
         "Content-Type": "application/json"
     }
 
-def generate_name_prompt(english_name):
+def generate_name_prompt(english_name, name_style):
     """生成用于请求智谱AI的prompt"""
-    return f"""作为一个专业的中文姓名翻译专家，请为外国人设计三个不同的富有文化内涵的中文名字。
+    style_description = "现代时尚" if name_style == "modern" else "传统古风"
+    return f"""作为一个专业的中文姓名翻译专家，请为外国人设计三个不同的{style_description}风格的中文名字。
 
 输入的英文名是：{english_name}
 
 请你仔细思考并设计三个完美的中文名字，要求：
 1. 发音要优美，尽量与英文名发音相近
 2. 字义要积极向上，寓意吉祥
-3. 整体要符合中国传统文化
+3. 整体要符合{style_description}的特点
 4. 名字的解释要有深度，体现文化内涵
 5. 性格特征要积极正面，符合名字特点
 6. 三个名字要有各自的特色，不要重复
+
+如果是现代风格：
+- 使用当代常用字
+- 寓意要符合现代人的审美和价值观
+- 避免过于古典或晦涩的用字
+
+如果是古风风格：
+- 可以使用典雅古韵的用字
+- 融入古典诗词的意境
+- 体现传统文化的精髓
 
 请严格按照以下JSON格式返回结果（注意：必须是合法的JSON格式，不要返回其他任何内容）：
 {{
@@ -68,15 +79,15 @@ def generate_name_prompt(english_name):
 
 注意事项：
 1. 所有解释必须与所选的字有直接关联
-2. 文化内涵要体现中国传统文化的精髓
+2. 文化内涵要体现{style_description}特色
 3. 性格特征要符合名字的字义
 4. 整体寓意要积极向上
 5. 所有解释要简洁有力，避免过于冗长
-6. 三个名字要风格各异，突出不同的文化特点
+6. 三个名字要风格各异，突出不同的特点
 
 请直接返回JSON格式的结果，不要加入任何其他说明文字。"""
 
-def call_zhipu_ai(english_name):
+def call_zhipu_ai(english_name, name_style):
     """调用智谱AI生成名字"""
     try:
         payload = {
@@ -84,7 +95,7 @@ def call_zhipu_ai(english_name):
             "messages": [
                 {
                     "role": "user",
-                    "content": generate_name_prompt(english_name)
+                    "content": generate_name_prompt(english_name, name_style)
                 }
             ],
             "temperature": 0.7,
@@ -97,7 +108,7 @@ def call_zhipu_ai(english_name):
             ZHIPU_API_URL,
             headers=get_zhipu_headers(),
             json=payload,
-            timeout=15  # 增加超时时间
+            timeout=15
         )
         
         if response.status_code == 200:
@@ -155,10 +166,10 @@ def get_character_info(char, characters):
         "personality": "积极向上"
     }
 
-def generate_chinese_name(english_name, characters, rules):
+def generate_chinese_name(english_name, name_style, characters, rules):
     """生成中文名字，优先使用智谱AI，失败时使用随机生成"""
     # 首先尝试使用智谱AI生成
-    ai_result = call_zhipu_ai(english_name)
+    ai_result = call_zhipu_ai(english_name, name_style)
     if ai_result and 'names' in ai_result and len(ai_result['names']) == 3:
         return ai_result['names']
         
@@ -190,12 +201,13 @@ def generate_chinese_name(english_name, characters, rules):
                 info = get_character_info(char, characters)
                 chars_info.append(f"{char}: {info.get('meaning', '优雅')}")
             
+            style_text = "现代" if name_style == "modern" else "古风"
             backup_names.append({
                 "chinese": chinese_name,
                 "pinyin": " ".join([get_character_info(char, characters).get("pinyin", "").capitalize() for char in chinese_chars]),
                 "characters_meaning": " ".join(chars_info),
-                "overall_meaning": "这个名字寓意着生命的美好与无限可能",
-                "cultural_significance": "体现了中国传统文化中对美好生活的向往与追求",
+                "overall_meaning": f"这个{style_text}风格的名字寓意着生命的美好与无限可能",
+                "cultural_significance": f"体现了{style_text}特色的文化内涵，展现对美好生活的向往",
                 "personality_traits": "开放、进取、充满活力"
             })
     
@@ -210,6 +222,7 @@ def generate():
     try:
         data = request.get_json()
         english_name = data.get('english_name', '').strip()
+        name_style = data.get('name_style', 'modern')  # 默认使用现代风格
         
         if not english_name:
             return jsonify({"error": "Name is required"}), 400
@@ -218,7 +231,7 @@ def generate():
         characters, rules = load_data()
         
         # 生成名字（现在一次调用就能得到三个名字）
-        names = generate_chinese_name(english_name, characters, rules)
+        names = generate_chinese_name(english_name, name_style, characters, rules)
         
         return jsonify(names)
     
